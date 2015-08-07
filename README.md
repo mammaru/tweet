@@ -15,11 +15,11 @@ rake db:drop
 
 # Memo
 * Newline character conversion
-** UNIX => DOS
+ * UNIX => DOS
 ```
 ruby -i -pe 'sub("\n", "\r\n")' DirName/**/*(.)
 ```
-** DOS => UNIX
+ * DOS => UNIX
 ```
-ruby -i -pe 'sub("\r", "")' DirName/**/*(.)
+r uby -i -pe 'sub("\r", "")' DirName/**/*(.)
 ```
