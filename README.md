@@ -1,9 +1,9 @@
-* gem
+# gem
 ```
 bundle install --path vendor/bundle
 ```
-* database
-```migrate
+# database
+```
 rake db:migrate
 ```
 ```
