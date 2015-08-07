@@ -17,6 +17,12 @@ tw_xml.elements.each("//xml/list/tweet") do |t|
   @tweets << t #Hash.from_xml(t.to_s)
 end
 
+# retrieve connection to database
+db = "db"
+env = "development"
+dbconfig = YAML::load(File.open("config/database.yml"))[db][env]
+ActiveRecord::Base.establish_connection(dbconfig)
+
 p @tweets
 @tweets.each do |tw|
 
