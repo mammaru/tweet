@@ -4,23 +4,19 @@ require 'time'
 require 'fileutils'
 require 'rexml/document'
 #require 'json'
-require 'mysql2'
+require 'sqlite3'
 
-# loading files
-$LOAD_PATH << './lib'
+# loading files in lib/
+$LOAD_PATH << File.expand_path('../lib', __FILE__)
 require 'models.rb'
 require 'io.rb'
 
 # loading file and storing into hash
 tw_xml = REXML::Document.new(File.new("./ignore/tweet.xml"))
-@tweets = []
+@tweets = [] # is an array in which each element has single tweet xml object
 tw_xml.elements.each("//xml/list/tweet") do |t|
   @tweets << t #Hash.from_xml(t.to_s)
 end
-
-# cnnection to database
-config = YAML.load_file("./ignore/database.yml")
-ActiveRecord::Base.establish_cnnection(config["db"]["development"])
 
 @tweets.each do |tw|
   user_name = tw.elements["user"].attributes["name"]
