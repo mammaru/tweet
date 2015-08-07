@@ -8,7 +8,7 @@ class Tweet < ActiveRecord::Base
 end
 
 class User < ActiveRecord::Base
-  has_many :tweets dependent: :destory
+  has_many :tweets, dependent: :destroy
 end
 
 class Autonomy < ActiveRecord::Base

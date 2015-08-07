@@ -5,23 +5,37 @@ require 'logger'
 task :default => :migrate
 
 namespace :db do
+  MIGRATIONS_DIR = "db/migrate"
+  
   desc "Load database.yml"
   task :configuration do
-    @dbconfig = YAML::load(File.open("config/database.yml"))[ENV["ENV"]]
-  end
-
-  desc "Migrate database by script in db/migrate"
-  task :migrate => :environment do
-    ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil )
-  end
-
-  desc "Drops database"
-  task :drop => :environment do
-    ActiveRecord::Base.connection.drop_database(@dbconfig)
+    puts ENV["ENV"]
+    db = "db"
+    env = ENV["ENV"] ? ENV["ENV"] : "development"
+    @dbconfig = YAML::load(File.open("config/database.yml"))[db][env]
+    puts @dbconfig
   end
 
   task :environment => :configuration do
     ActiveRecord::Base.establish_connection(@dbconfig)
     ActiveRecord::Base.logger = Logger.new("db/database.log")
   end
+  
+  desc "Migrate database by script in #{MIGRATIONS_DIR}"
+  task :migrate => :environment do
+    ActiveRecord::Migrator.migrate(MIGRATIONS_DIR, ENV["VERSION"] ? ENV["VERSION"].to_i : nil )
+  end
+
+  desc "Drops database"
+  task :drop => :environment do
+    db_name = @dbconfig["database"]
+    puts "drop #{db_name}"
+    ActiveRecord::Base.connection.drop_database db_name rescue nil
+  end
+
+  desc "Roll back database schema to the previous version"
+  task :rollback => :environment do
+    ActiveRecord::Migrator.rollback(MIGRATIONS_DIR, ENV["STEP"] ? ENV["STEP"].to_i : 1)
+  end
+  
 end

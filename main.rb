@@ -9,7 +9,6 @@ require 'sqlite3'
 # loading files in lib/
 $LOAD_PATH << File.expand_path('../lib', __FILE__)
 require 'models.rb'
-require 'io.rb'
 
 # loading file and storing into hash
 tw_xml = REXML::Document.new(File.new("./ignore/tweet.xml"))
@@ -18,22 +17,27 @@ tw_xml.elements.each("//xml/list/tweet") do |t|
   @tweets << t #Hash.from_xml(t.to_s)
 end
 
+p @tweets
 @tweets.each do |tw|
+
+  # set user
   user_name = tw.elements["user"].attributes["name"]
-  body = tw.elements["text"].attributes["body"]
-  tweeted_at = Time.parse(tw.attributes["time"])
-  body = tw.elements["text"].attributes["body"]
-  
-  tweet = Tweet.new
-  if User.find_by_name(user_name)
-    user = User.new
-    user.name = user_name
+  p user_name
+  user = User.find_by_name(user_name)
+  unless user then
+    user = User.new(name: user_name)
     user.save
-    tweet.user_id = User.find_by_name(user_name)
-  else
-    tweet.user_id = User.find_by_name(user_name)
   end
-  tweet.tweeted_at = tweeted_at
-  tweet.body = body
+
+  # set tweet
+  tweet = Hash.new
+  tweet["user_id"] = user.id
+  tweet["body"] = tw.elements["text"].attributes["body"]
+  tweet["tweeted_at"] = Time.parse(tw.attributes["time"])
+  tweet["latitude"] = tw.elements["place"].attributes["latitudeF"]
+  tweet["longitude"] = tw.elements["place"].attributes["longitudeF"]
+  
+  tweet = Tweet.new(tweet)
+  tweet.save
   
 end
