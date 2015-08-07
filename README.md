@@ -21,5 +21,5 @@ ruby -i -pe 'sub("\n", "\r\n")' DirName/**/*(.)
 ```
 * DOS => UNIX
 ```
-r uby -i -pe 'sub("\r", "")' DirName/**/*(.)
+ruby -i -pe 'sub("\r", "")' DirName/**/*(.)
 ```
