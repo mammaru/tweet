@@ -59,11 +59,11 @@ class DataBase
           user.save
         end
         tweet = Tweet.new(:user_id => user.id,
-                          :text => tweet[:text],
-                          :tweeted_at => tweet[:tweeted_at],
-                          :latitude => tweet[:latitude],
-                          :longitude => tweet[:longitude],
-                          :place => tweet[:place],
+                          :text => tweet.has_key?(:text) ? tweet[:text] : tweet["text"],
+                          :tweeted_at => tweet.has_key?(:tweeted_at) ? tweet[:tweeted_at] : tweet["tweeted_at"],
+                          :latitude => tweet.has_key?(:latitude) ? tweet[:latitude] : tweet["latitude"],
+                          :longitude => tweet.has_key?(:longitude) ? tweet[:longitude] : tweet["longitude"],
+                          :place => tweet.has_key?(:place) ? tweet[:place] : tweet["place"],
                           :autonomy_id => 1)
         tweet.save
       end
@@ -74,13 +74,14 @@ class DataBase
   
   def save_from_xml(file_path)    
     begin
-      # loading file and storing into hash
+      # load file
       tw_xml = REXML::Document.new(File.new("#{ENV["ROOT"]}/#{file_path}"))
     rescue
       if File.exists? "#{ENV["ROOT"]}/#{file_path}" then
         raise "File has invalid form for xml"
       else
-        raise "File does not exist. Augument file_path must be relative path from ENV[\"ROOT\"]."      end
+        raise "File does not exist. Augument file_path must be relative path from ENV[\"ROOT\"]."
+      end
     end
     
     tweets = [] # is an array in which each element has single tweet xml object
@@ -100,13 +101,14 @@ class DataBase
 
   def save_from_json(file_path)    
     begin
-      # loading file and storing into hash
+      # load file
       tw_json = JSON.parse("#{ENV["ROOT"]}/#{file_path}")
     rescue
       if File.exists? "#{ENV["ROOT"]}/#{file_path}" then
         raise "File has invalid form for json"
       else
-        raise "File does not exist. Augument file_path must be relative path from ENV[\"ROOT\"]."      end
+        raise "File does not exist. Augument file_path must be relative path from ENV[\"ROOT\"]."
+      end
     end
     
     tweets = [] # is an array in which each element has single tweet xml object
