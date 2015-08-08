@@ -1,19 +1,20 @@
-# gems
+# Gems
 ```
 bundle install --path vendor/bundle
 ```
-# database operations
+# Usages
+## database operations and make instance
 Using rakefile
 ```
 rake db:migrate
 rake db:rollback
-rake db:drop
 ```
-or directly make instance of class DataBase
+and make instance of class DataBase. If database does not exist, instance is initialized with migration.
 ```
 db = DataBase.instance
 ```
-To save database
+## save data
+To save tweet into database
 ```
 tweet = {:user => username
          :text => body of tweet
@@ -27,7 +28,8 @@ or
 tweets = [tweet, tweet]
 tweets = db.save(tweets)
 ```
-to get data from database
+## use data
+To get data from database
 ```
 tweets = db.tweets
 tweets.each do |tweet|

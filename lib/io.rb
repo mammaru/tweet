@@ -43,43 +43,31 @@ class DataBase
     User.all
   end
 
-  def places
+  def autonomies
     Autonomy.all
   end
 
-  def save(tweets)
-    if tweets.instance_of? Array then
-      tweets.each do |tw|
+  def save(tw)
+    tweets = (tw.instance_of? Hash) ? [tw] : tw
+    begin
+      tweets.each do |tweet|
         # set user
-        user_name = tw[:user_name]
+        user_name = tweet[:user_name]
         user = User.find_by_name(user_name)
         unless user then # new user
           user = User.new(name: user_name)
           user.save
         end
         tweet = Tweet.new(:user_id => user.id,
-                          :text => tw[:text],
-                          :tweeted_at => tw[:tweeted_at],
-                          :latitude => tw[:latitude],
-                          :longitude => tw[:longitude])
+                          :text => tweet[:text],
+                          :tweeted_at => tweet[:tweeted_at],
+                          :latitude => tweet[:latitude],
+                          :longitude => tweet[:longitude],
+                          :place => tweet[:place],
+                          :autonomy_id => 1)
         tweet.save
       end
-    elsif tweets.instans_of? Hash then
-      tw = tweets
-      # set user
-      user_name = tw[:user_name]
-      user = User.find_by_name(user_name)
-      unless user then # new user
-        user = User.new(name: user_name)
-        user.save
-      end
-      tweet = Tweet.new(:user_id => user.id,
-                        :text => tw[:text],
-                        :tweeted_at => tw[:tweeted_at],
-                        :latitude => tw[:latitude],
-                        :longitude => tw[:longitude])
-      tweet.save
-    else
+    rescue
       raise "augument must be a hash or an array that contains hash"
     end
   end
@@ -101,11 +89,40 @@ class DataBase
                  :text => tw.elements["text"].attributes["body"],
                  :tweeted_at => Time.parse(tw.attributes["time"]),
                  :latitude => tw.elements["place"].attributes["latitudeF"],
-                 :longitude => tw.elements["place"].attributes["longitudeF"]}
+                 :longitude => tw.elements["place"].attributes["longitudeF"],
+                 :place => tw.elements["place"].attributes["name"],
+                 :autonomy => tw.elements["place"].attributes["name"]}
     end
 
     self.save(tweets)
 
   end
+
+  def save_from_json(file_path)    
+    begin
+      # loading file and storing into hash
+      tw_json = JSON.parse("#{ENV["ROOT"]}/#{file_path}")
+    rescue
+      if File.exists? "#{ENV["ROOT"]}/#{file_path}" then
+        raise "File has invalid form for json"
+      else
+        raise "File does not exist. Augument file_path must be relative path from ENV[\"ROOT\"]."      end
+    end
+    
+    tweets = [] # is an array in which each element has single tweet xml object
+    tw_xml.elements.each("//xml/list/tweet") do |tw|
+      tweets << {:user_name => tw.elements["user"].attributes["name"],
+                 :text => tw.elements["text"].attributes["body"],
+                 :tweeted_at => Time.parse(tw.attributes["time"]),
+                 :latitude => tw.elements["place"].attributes["latitudeF"],
+                 :longitude => tw.elements["place"].attributes["longitudeF"],
+                 :place => tw.elements["place"].attributes["name"],
+                 :autonomy => tw.elements["place"].attributes["name"]}
+    end
+
+    self.save(tweets)
+
+  end
+
 
 end

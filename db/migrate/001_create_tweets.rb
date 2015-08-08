@@ -6,6 +6,7 @@ class CreateTweets < ActiveRecord::Migration
       t.datetime :tweeted_at
       t.integer :latitude
       t.string :longitude
+      t.string :place
       t.string :autonomy_id
 
       t.timestamps null: true
