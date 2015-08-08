@@ -16,11 +16,12 @@ db = DataBase.instance
 ## save data
 To save tweet into database
 ```
-tweet = {:user => username
-         :text => body of tweet
-         :tweeted_at => tweet time
-         :latitude => latitude
-         :longitude => lingitude}
+tweet = {:user => username,
+         :text => body of tweet,
+         :tweeted_at => tweet time,
+         :latitude => latitude,
+         :longitude => lingitude,
+         :place => place name}
 db.save(tweet)
 ```
 or
