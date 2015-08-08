@@ -1,5 +1,3 @@
-require 'active_record'
-
 # Definition of objects mapped to database 
 class Tweet < ActiveRecord::Base
   belongs_to :user
