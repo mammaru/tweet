@@ -12,7 +12,8 @@ require 'io.rb'
 db = DataBase.instance
 #db.save_from_xml("ignore/tweet.xml")
 users = db.users
-tweets =  db.tweets
+tweets = db.tweets
+places = db.places
 tweets.each do |tweet|
   #p tweet.id
   #p tweet.user.name

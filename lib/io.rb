@@ -43,7 +43,7 @@ class DataBase
     User.all
   end
 
-  def autonomies
+  def places
     Autonomy.all
   end
 
