@@ -9,11 +9,11 @@ namespace :db do
   
   desc "Load database.yml"
   task :configuration do
-    puts ENV["ENV"]
     db = "db"
     env = ENV["ENV"] ? ENV["ENV"] : "development"
+    p "environment : #{env}"
     @dbconfig = YAML::load(File.open("config/database.yml"))[db][env]
-    puts @dbconfig
+    #p @dbconfig
   end
 
   task :environment => :configuration do
@@ -29,7 +29,7 @@ namespace :db do
   desc "Drops database"
   task :drop => :environment do
     db_name = @dbconfig["database"]
-    puts "drop #{db_name}"
+    p "drop #{db_name}"
     ActiveRecord::Base.connection.drop_database db_name rescue nil
   end
 
