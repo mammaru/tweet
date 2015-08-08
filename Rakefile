@@ -2,7 +2,7 @@ require 'active_record'
 require 'yaml'
 require 'logger'
 
-task :default => :migrate
+#task :default => :migrate
 
 namespace :db do
   MIGRATIONS_DIR = "db/migrate"

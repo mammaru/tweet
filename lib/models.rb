@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'active_record'
 
 # Definition of objects mapped to database 
