@@ -56,13 +56,3 @@ users.each do |user|
   puts "------"
 end
 ```
-# Memo
-## Newline character conversion
-* UNIX => DOS
-```
-ruby -i -pe 'sub("\n", "\r\n")' DirName/**/*(.)
-```
-* DOS => UNIX
-```
-ruby -i -pe 'sub("\r", "")' DirName/**/*(.)
-```
