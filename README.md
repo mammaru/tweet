@@ -37,7 +37,7 @@ tweets.each do |tweet|
   do something like
   p tweet.user.name
   p tweet.text
-  p "------"
+  puts "------"
 end
 
 users = db.users
@@ -46,7 +46,7 @@ users.each do |user|
   user.tweets.each do |tweet|
     p tweet.text
   end
-  p "------"
+  puts "------"
 end
 ```
 # Memo

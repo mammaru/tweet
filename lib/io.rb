@@ -30,6 +30,14 @@ class DataBase
       ActiveRecord::Base.logger = Logger.new("#{ENV["ROOT"]}/db/database.log")
       ActiveRecord::Migrator.migrate(migrt_dir)
     end
+
+    # storing initial data to autonomies
+    Autonomy.delete_all
+    File.open("#{ENV["ROOT"]}/db/autonomies.ini") do |file|
+      file.each_line do |autonomy|
+        Autonomy.create(:name => autonomy.force_encoding("utf-8").chomp)
+      end
+    end
   end
 
   def tweets
@@ -58,6 +66,7 @@ class DataBase
           user = User.new(name: user_name)
           user.save
         end
+        
         tweet = Tweet.new(:user_id => user.id,
                           :text => t.has_key?(:text) ? t[:text] : t["text"],
                           :tweeted_at => t.has_key?(:tweeted_at) ? t[:tweeted_at] : t["tweeted_at"],

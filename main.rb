@@ -18,9 +18,11 @@ autonomies = db.autonomies
 tweets.each do |tweet|
   #p tweet.id
   #p tweet.user.name
-  #p tweet.text
+  p tweet.text
   #p tweet.tweeted_at
 end
+
+puts "\n============"
 
 users.each do |user|
   p user.name
@@ -30,3 +32,12 @@ users.each do |user|
   puts "-----"
 end
 
+puts "\n============"
+
+autonomies.each do |autonomy|
+  p autonomy.name
+  autonomy.tweets.each do |tweet|
+    p tweet.text
+  end
+  puts "-----"
+end

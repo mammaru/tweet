@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'active_record'
 require 'yaml'
 require 'logger'
@@ -43,6 +44,17 @@ namespace :db do
   desc "Retrieves the current schema version number"
   task :version => :configure_connection do
     puts "Current version: #{ActiveRecord::Migrator.current_version}"
+  end
+
+  desc "Store initial data for table autonomies"
+  task :seed => :configure_connection do
+    require './lib/models.rb'
+    Autonomy.delete_all
+    File.open("db/autonomies.ini") do |file|
+      file.each_line do |autonomy|
+        Autonomy.create(:name => autonomy.force_encoding("utf-8").chomp)
+      end
+    end
   end
   
 end
