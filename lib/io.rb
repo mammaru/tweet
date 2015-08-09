@@ -1,10 +1,8 @@
 # coding: utf-8
 require 'time'
-#require "active_support/core_ext/hash/conversions"
 require 'fileutils'
 require 'rexml/document'
 #require 'json'
-require 'sqlite3'
 require 'active_record'
 require 'yaml'
 require 'logger'
@@ -23,8 +21,8 @@ class DataBase
     @dbconfig = YAML::load(File.open("#{ENV["ROOT"]}/config/database.yml"))[@db][@env]
     # retrieve or create connection to database
     ActiveRecord::Base.establish_connection(@dbconfig)
-    unless  (ActiveRecord::Base.connection.table_exists? "tweets" or
-             ActiveRecord::Base.connection.table_exists? "users" or
+    unless  (ActiveRecord::Base.connection.table_exists? "tweets" and
+             ActiveRecord::Base.connection.table_exists? "users" and
              ActiveRecord::Base.connection.table_exists? "autonomies") then
       # create database and migrate
       p "execute migration."

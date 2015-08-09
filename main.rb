@@ -1,10 +1,11 @@
 # coding: utf-8
-require 'fileutils'
-require 'rexml/document'
+#require 'fileutils'
+#require 'rexml/document'
 #require 'json'
 
 # loading files in lib/
 ENV["ROOT"] = File.expand_path("..", __FILE__)
+ENV["ENV"] = "development"
 $LOAD_PATH << File.expand_path("../lib", __FILE__)
 require 'io.rb'
 
@@ -17,7 +18,7 @@ autonomies = db.autonomies
 tweets.each do |tweet|
   #p tweet.id
   #p tweet.user.name
-  p tweet.text
+  #p tweet.text
   #p tweet.tweeted_at
 end
 
@@ -26,6 +27,6 @@ users.each do |user|
   user.tweets.each do |tweet|
     p tweet.text
   end
-  p "-----"
+  puts "-----"
 end
 

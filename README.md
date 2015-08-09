@@ -14,7 +14,7 @@ and make instance of class DataBase. If database does not exist, instance is ini
 db = DataBase.instance
 ```
 ## save data
-To save tweet into database
+To save tweet into database, make hash of tweet data and save
 ```
 tweet = {:user => username,
          :text => body of tweet,
@@ -24,17 +24,29 @@ tweet = {:user => username,
          :place => place name}
 db.save(tweet)
 ```
-or
+or array of hashes is allowed
 ```
-tweets = [tweet, tweet]
-tweets = db.save(tweets)
+tweets = [tweet1, tweet2, ...]
+db.save(tweets)
 ```
 ## use data
 To get data from database
 ```
 tweets = db.tweets
 tweets.each do |tweet|
-  do something
+  do something like
+  p tweet.user.name
+  p tweet.text
+  p "------"
+end
+
+users = db.users
+users.each do |user|
+  p user.name
+  user.tweets.each do |tweet|
+    p tweet.text
+  end
+  p "------"
 end
 ```
 # Memo
