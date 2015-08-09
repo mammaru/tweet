@@ -20,5 +20,12 @@ tweets.each do |tweet|
   p tweet.text
   #p tweet.tweeted_at
 end
-#p user
+
+users.each do |user|
+  p user.name
+  user.tweets.each do |tweet|
+    p tweet.text
+  end
+  p "-----"
+end
 

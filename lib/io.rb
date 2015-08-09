@@ -21,15 +21,14 @@ class DataBase
     @db = "db"
     @env = ENV["ENV"] ? ENV["ENV"] : "development"
     @dbconfig = YAML::load(File.open("#{ENV["ROOT"]}/config/database.yml"))[@db][@env]
-    if File.exists?("#{ENV["ROOT"]}/#{@dbconfig["database"]}") then
-      # retrieve connection to database
-      ActiveRecord::Base.establish_connection(@dbconfig)
-    else
+    # retrieve or create connection to database
+    ActiveRecord::Base.establish_connection(@dbconfig)
+    unless  (ActiveRecord::Base.connection.table_exists? "tweets" or
+             ActiveRecord::Base.connection.table_exists? "users" or
+             ActiveRecord::Base.connection.table_exists? "autonomies") then
       # create database and migrate
-      p "create database and execute migration."
+      p "execute migration."
       migrt_dir = ENV["ROOT"] + "/db/migrate"
-      #@dbconfig = YAML::load(File.open("config/database.yml"))[@db][@env]
-      ActiveRecord::Base.establish_connection(@dbconfig)
       ActiveRecord::Base.logger = Logger.new("#{ENV["ROOT"]}/db/database.log")
       ActiveRecord::Migrator.migrate(migrt_dir)
     end
@@ -49,22 +48,26 @@ class DataBase
 
   def save(tw)
     tweets = (tw.instance_of? Hash) ? [tw] : tw
+    #p tweets
     begin
-      tweets.each do |tweet|
+      tweets.each do |t|
         # set user
-        user_name = tweet[:user_name]
+        user_name = t.has_key?(:user_name) ? t[:user_name] : t["user_name"]
+        #p user_name
         user = User.find_by_name(user_name)
+        #p user
         unless user then # new user
           user = User.new(name: user_name)
           user.save
         end
         tweet = Tweet.new(:user_id => user.id,
-                          :text => tweet.has_key?(:text) ? tweet[:text] : tweet["text"],
-                          :tweeted_at => tweet.has_key?(:tweeted_at) ? tweet[:tweeted_at] : tweet["tweeted_at"],
-                          :latitude => tweet.has_key?(:latitude) ? tweet[:latitude] : tweet["latitude"],
-                          :longitude => tweet.has_key?(:longitude) ? tweet[:longitude] : tweet["longitude"],
-                          :place => tweet.has_key?(:place) ? tweet[:place] : tweet["place"],
+                          :text => t.has_key?(:text) ? t[:text] : t["text"],
+                          :tweeted_at => t.has_key?(:tweeted_at) ? t[:tweeted_at] : t["tweeted_at"],
+                          :latitude => t.has_key?(:latitude) ? t[:latitude] : t["latitude"],
+                          :longitude => t.has_key?(:longitude) ? t[:longitude] : t["longitude"],
+                          :place => t.has_key?(:place) ? t[:place] : t["place"],
                           :autonomy_id => 1)
+        #p tweet
         tweet.save
       end
     rescue
