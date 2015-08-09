@@ -3,25 +3,25 @@ require 'active_record'
 require 'yaml'
 require 'logger'
 
-#task :default => :migrate
+ROOT = ENV["ROOT"]
 
 namespace :db do
   
   task :environment do
-    MIGRATIONS_DIR = "db/migrate"
+    MIGRATIONS_DIR = "#{ROOT}/db/migrate"
     DB = "db"
     DEV_ENV = ENV["ENV"] || "development"
   end
   
   task :configuration => :environment do
     puts "Environment : " + DEV_ENV 
-    @dbconfig = YAML::load(File.open("config/database.yml"))[DB][DEV_ENV]
+    @dbconfig = YAML::load(File.open("#{ROOT}/config/database.yml"))[DB][DEV_ENV]
     #p @dbconfig
   end
 
   task :configure_connection => :configuration do
     ActiveRecord::Base.establish_connection(@dbconfig)
-    ActiveRecord::Base.logger = Logger.new("db/database.log")
+    ActiveRecord::Base.logger = Logger.new("#{ROOT}/db/database.log")
   end
   
   desc "Migrate database by script in db/migrate"
