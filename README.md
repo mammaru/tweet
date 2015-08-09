@@ -11,6 +11,13 @@ rake db:rollback
 ```
 and make instance of class DataBase. If database does not exist, instance is initialized with migration.
 ```
+\# header of main.rb
+ENV["ROOT"] = File.expand_path("..", __FILE__)
+ENV["ENV"] = "development"
+$LOAD_PATH << File.expand_path("../lib", __FILE__)
+require 'io.rb'
+
+\# make instance of DB
 db = DataBase.instance
 ```
 ## save data
